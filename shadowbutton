@@ -1,0 +1,31 @@
+
+/*
+ *
+ *  You can build a button like this:
+ *  self.button = [self sampleShadowButtonWithX:110 Y:180 Width:100 Height:100 
+ *               ShadowColor:[UIColor customColorWithAlpha:1] Sel:@selector(selector:)];
+ *  [self.view addSubview:self.button];
+ *
+ */
+-(UIButton *)sampleShadowButtonWithX:(CGFloat)x
+                                   Y:(CGFloat)y
+                               Width:(CGFloat)width
+                              Height:(CGFloat)height
+                         ShadowColor:(UIColor *)shadowColor
+                                 Sel:(SEL)sel
+{
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+    button.backgroundColor = [UIColor blackColor];
+    button.frame = CGRectMake(x, y, width, height);
+    button.layer.cornerRadius = 50;
+    //阴影颜色 shadowColor
+    button.layer.shadowColor = shadowColor.CGColor;
+    //偏移量 shadowOffset
+    button.layer.shadowOffset = CGSizeMake(0, 0);
+    //阴影扩散多大 spreadRadius
+    button.layer.shadowRadius = 10;
+    //透明度 alpha
+    button.layer.shadowOpacity = 0.8;
+    [button addTarget:self action:sel forControlEvents:UIControlEventTouchUpInside];
+    return button;
+}
