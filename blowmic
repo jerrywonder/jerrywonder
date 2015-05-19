@@ -1,0 +1,60 @@
+#import <AudioToolbox/AudioToolbox.h>
+#import <AVFoundation/AVFoundation.h>
+#pragma mark - 吹一吹 blow mic
+//creat method 创建方法
+-(void)favourite:(UIButton * )button{
+    NSLog(@"%@",model.color);
+    NSURL *url = [NSURL fileURLWithPath:@"/dev/null"];
+    
+    NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [NSNumber numberWithFloat: 44100.0],                 AVSampleRateKey,
+                              [NSNumber numberWithInt: kAudioFormatAppleLossless], AVFormatIDKey,
+                              [NSNumber numberWithInt: 1],                         AVNumberOfChannelsKey,
+                              [NSNumber numberWithInt: AVAudioQualityMax],         AVEncoderAudioQualityKey,
+                              nil];
+    
+    NSError *error;
+    
+    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
+    if (error)
+    {
+        //        NSLog(@"%@", [error description]);
+    }
+    
+    recorder = [[AVAudioRecorder alloc] initWithURL:url settings:settings error:&error];
+    if (recorder)
+    {
+        [recorder prepareToRecord];
+        recorder.meteringEnabled = YES;
+        [recorder record];
+        levelTimer = [NSTimer scheduledTimerWithTimeInterval: 0.03
+                                                      target: self
+                                                    selector: @selector(levelTimerCallback:)
+                                                    userInfo: nil
+                                                     repeats: YES];
+    }
+    else
+    {
+        //        NSLog(@"%@", [error description]);
+    }
+    
+}
+
+//判断波形 judge Volume waveform
+- (void)levelTimerCallback:(NSTimer *)timer {
+    [recorder updateMeters];
+    
+    const double ALPHA = 0.05;
+    double peakPowerForChannel = pow(10, (0.05 * [recorder peakPowerForChannel:0]));
+    lowPassResults = ALPHA * peakPowerForChannel + (1.0 - ALPHA) * lowPassResults;
+    
+    //    NSLog(@"Average input: %f Peak input: %f Low pass results: %f", [recorder averagePowerForChannel:0], [recorder peakPowerForChannel:0], lowPassResults);
+    
+    if (lowPassResults > 0.8) {
+        //把你要开启的方法写到这里如：
+         [self openGate];
+    }else{
+        
+        
+    }
+}
