@@ -1,0 +1,12 @@
+    //duang 只要修改setType就可以改特效；
+    /*  @"cube" kCATransitionPush kCATransitionReveal kCATransitionMoveIn kCATransitionFade @"suckEffect" @"oglFlip" @"rippleEffect" @"cameraIrisHollowOpen" @"cameraIrisHollowClose" @"Opacity"
+     
+     */
+    CATransition *transtion = [CATransition animation];
+    transtion.duration = .5;
+    [transtion setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+    [transtion setType:kCATransitionFade];
+    [transtion setSubtype:kCATransitionFromTop];
+    [self.navigationController.view.layer addAnimation:transtion forKey:nil];
+    SOCSignUp * sign = [[SOCSignUp alloc]init];
+    [self.navigationController pushViewController:sign animated:YES];
